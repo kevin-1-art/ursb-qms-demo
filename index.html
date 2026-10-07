@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123b66">
+  <title>URSB | QMS public demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #18334d;
+      background: #f2f6fa;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; }
+    button, textarea { font: inherit; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 15px max(22px, calc((100vw - 1180px) / 2));
+      background: #123b66;
+      color: white;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: .04em; }
+    .brand-mark { display: grid; width: 37px; height: 37px; place-items: center; border-radius: 11px; color: #123b66; background: white; }
+    .brand small { display: block; margin-top: 2px; font-size: 10px; font-weight: 600; letter-spacing: .12em; opacity: .78; }
+    .demo-label { padding: 7px 11px; border: 1px solid #ffffff68; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    main { max-width: 1180px; margin: 0 auto; padding: 26px 22px 48px; }
+    .notice { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 22px; padding: 13px 15px; border: 1px solid #f0d28b; border-radius: 10px; color: #654b12; background: #fff8e6; font-size: 13px; line-height: 1.5; }
+    .notice strong { display: block; }
+    .heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 15px; margin-bottom: 18px; }
+    .eyebrow { color: #3874ac; font-size: 11px; font-weight: 800; letter-spacing: .14em; }
+    h1 { margin: 5px 0 0; color: #153755; font-size: clamp(24px, 4vw, 31px); letter-spacing: -.035em; }
+    .heading p { margin: 6px 0 0; color: #63798c; font-size: 14px; }
+    .refresh-note { color: #617589; font-size: 12px; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin-bottom: 18px; }
+    .card { border: 1px solid #e0e8ef; border-radius: 12px; background: white; box-shadow: 0 3px 12px #163b5b08; }
+    .stat { padding: 16px 18px; }
+    .stat span { display: block; color: #6b7f91; font-size: 12px; }
+    .stat strong { display: block; margin-top: 7px; color: #153755; font-size: 24px; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(290px, .85fr); gap: 16px; align-items: start; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 17px 18px; border-bottom: 1px solid #e9eef3; }
+    h2 { margin: 0; color: #1a3a57; font-size: 16px; }
+    .count { color: #6b7f91; font-size: 12px; }
+    .ticket { padding: 16px 18px; border-bottom: 1px solid #edf1f5; }
+    .ticket:last-child { border-bottom: 0; }
+    .ticket-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .ticket-id { color: #4b7090; font-size: 11px; font-weight: 700; }
+    .priority { border-radius: 20px; padding: 4px 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+    .high { color: #a63235; background: #fff0ef; }
+    .normal { color: #83600f; background: #fff7df; }
+    .low { color: #426c51; background: #eaf6ee; }
+    .ticket h3 { margin: 8px 0 4px; color: #1a3a57; font-size: 15px; }
+    .ticket p { margin: 0; color: #6b7f91; font-size: 12px; line-height: 1.5; }
+    .age { color: #5c7185; white-space: nowrap; font-size: 11px; }
+    .agent-body { padding: 18px; }
+    .current-ticket { margin-bottom: 16px; padding: 14px; border-radius: 9px; background: #f3f7fb; }
+    .current-ticket h3 { margin: 7px 0 5px; color: #163a5a; font-size: 15px; }
+    .current-ticket p { margin: 0; color: #617589; font-size: 12px; line-height: 1.6; }
+    .thread { margin: 14px 0; padding: 13px; border-left: 3px solid #5b98d0; border-radius: 0 8px 8px 0; background: #f7fafd; }
+    .thread strong { color: #375772; font-size: 11px; }
+    .thread p { margin: 7px 0 0; color: #506a80; font-size: 12px; line-height: 1.6; }
+    label { display: block; margin-bottom: 7px; color: #4d6478; font-size: 12px; font-weight: 700; }
+    textarea { width: 100%; min-height: 74px; resize: vertical; border: 1px solid #dbe4ec; border-radius: 8px; padding: 10px; color: #556b7e; background: #fbfcfd; font-size: 12px; }
+    textarea:disabled { cursor: not-allowed; opacity: .8; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; margin-top: 10px; padding: 0 13px; border: 0; border-radius: 7px; color: white; background: #2468a6; font-size: 12px; font-weight: 700; }
+    .button:disabled { cursor: not-allowed; opacity: .55; }
+    .footnote { margin: 16px 0 0; color: #788a99; font-size: 11px; line-height: 1.6; }
+    footer { margin-top: 22px; color: #748695; text-align: center; font-size: 11px; }
+    @media (max-width: 740px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .layout { grid-template-columns: 1fr; }
+      .refresh-note { width: 100%; }
+      main { padding-top: 19px; }
+    }
+    @media (max-width: 420px) {
+      .topbar { padding-right: 15px; padding-left: 15px; }
+      main { padding-right: 14px; padding-left: 14px; }
+      .stat { padding: 13px; }
+      .ticket, .panel-head, .agent-body { padding-right: 14px; padding-left: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">U</span><span>URSB<small>APPLICATION QUEUE</small></span></div>
+    <span class="demo-label">Public demo · sample data</span>
+  </header>
+  <main>
+    <aside class="notice">
+      <span aria-hidden="true">ⓘ</span>
+      <div><strong>Static preview only — not the live QMS.</strong>This public demonstration uses fictional sample data. Sign-in, ticket actions, and osTicket integration are not connected. Do not enter personal or confidential information.</div>
+    </aside>
+    <section class="heading">
+      <div><span class="eyebrow">STAFF WORKSPACE PREVIEW</span><h1>Application queue</h1><p>Priority first, then oldest waiting applications.</p></div>
+      <span class="refresh-note">Illustrative figures · not live service data</span>
+    </section>
+    <section class="stats" aria-label="Example queue summary">
+      <div class="card stat"><span>Waiting in queue</span><strong>12</strong></div>
+      <div class="card stat"><span>Agents available</span><strong>4</strong></div>
+      <div class="card stat"><span>Longest wait</span><strong>2h 18m</strong></div>
+      <div class="card stat"><span>In progress</span><strong>4</strong></div>
+    </section>
+    <div class="layout">
+      <section class="card" aria-labelledby="queue-title">
+        <div class="panel-head"><h2 id="queue-title">Waiting applications</h2><span class="count">3 sample tickets</span></div>
+        <article class="ticket">
+          <div class="ticket-top"><span class="ticket-id">DEMO-1042 · General</span><span class="priority high">High</span></div>
+          <h3>Share capital registration</h3><p>Sample Applicant A · applicant@example.test</p>
+          <div class="ticket-top" style="margin-top:10px"><span class="count">Waiting</span><span class="age">2h 18m</span></div>
+        </article>
+        <article class="ticket">
+          <div class="ticket-top"><span class="ticket-id">DEMO-1041 · General</span><span class="priority normal">Normal</span></div>
+          <h3>Annual return application</h3><p>Sample Applicant B · applicant@example.test</p>
+          <div class="ticket-top" style="margin-top:10px"><span class="count">Waiting</span><span class="age">1h 06m</span></div>
+        </article>
+        <article class="ticket">
+          <div class="ticket-top"><span class="ticket-id">DEMO-1040 · General</span><span class="priority low">Low</span></div>
+          <h3>Company name reservation</h3><p>Sample Applicant C · applicant@example.test</p>
+          <div class="ticket-top" style="margin-top:10px"><span class="count">Waiting</span><span class="age">24m</span></div>
+        </article>
+      </section>
+      <section class="card" aria-labelledby="agent-title">
+        <div class="panel-head"><h2 id="agent-title">Agent workspace preview</h2><span class="count">Not signed in</span></div>
+        <div class="agent-body">
+          <div class="current-ticket"><span class="ticket-id">DEMO-1038 · High priority</span><h3>Business registration enquiry</h3><p>Sample Applicant D<br>applicant@example.test</p></div>
+          <div class="thread"><strong>Applicant · sample conversation</strong><p>This is an example message for the static preview. In the live QMS, replies would be posted through osTicket after the bridge is deployed and verified.</p></div>
+          <label for="reply">Reply to applicant</label>
+          <textarea id="reply" disabled placeholder="Reply is disabled in this static preview."></textarea>
+          <button class="button" type="button" disabled>Send reply (preview only)</button>
+          <p class="footnote">This page demonstrates the intended screen only. It does not claim tickets, send replies, authenticate staff, or access applicant records.</p>
+        </div>
+      </section>
+    </div>
+    <footer>URSB QMS static demonstration · fictional data · public preview only</footer>
+  </main>
+</body>
+</html>
